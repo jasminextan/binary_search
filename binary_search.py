@@ -133,7 +133,7 @@ def argmin(f, lo, hi, epsilon=1e-3):
     Essentially all data mining algorithms are just
     this argmin implementation in disguise.
     If you go on to take the data mining class (CS145/MATH166),
-    we will spend a lot of time talking about different 
+    we will spend a lot of time talking about different
     f functions that can be minimized and their applications.
     But the actual minimization code will all be a
     variant of this binary search.
