@@ -1,6 +1,7 @@
 #!/bin/python3
 '''
-JOKE: There are 2 hard problems in computer science: cache invalidation, naming things, and off-by-1 errors.
+JOKE: There are 2 hard problems in 
+computer science: cache invalidation, naming things, and off-by-1 errors.
 
 It's really easy to have off-by-1 errors in these problems.
 Pay very close attention to your list indexes and your < vs <= operators.
@@ -26,6 +27,25 @@ def find_smallest_positive(xs):
     >>> find_smallest_positive([-3, -2, -1]) is None
     True
     '''
+    if len(xs) == 0:
+        return None
+    
+    mid = len(xs) // 2
+    if len(xs) == 1 and xs[0] > 0:
+        return 0
+    if xs[mid] > 0:
+        if xs[mid-1] <= 0:
+            return mid
+        else:
+            return find_smallest_positive(xs[:mid])  
+    if xs[mid] < 0:
+        if find_smallest_positive(xs[mid + 1:]) is None:
+            return None
+        else:
+            return mid + 1 + find_smallest_positive(xs[mid + 1:])
+    if xs[mid] == 0: 
+        return mid + 1
+
 
 
 def count_repeats(xs, x):
@@ -52,6 +72,42 @@ def count_repeats(xs, x):
     >>> count_repeats([3, 2, 1], 4)
     0
     '''
+    def helper(low, high):
+        if low > high:
+            return 0
+        elif xs[low] < x:
+            return 0
+        elif xs[high] > x:
+            return 0
+        elif xs[high] == xs[low] == x:
+            return high - low + 1
+        else:
+            mid = (high + low) // 2
+            if xs[mid] > x:
+                return helper(mid + 1, high)
+            if xs[mid] < x:
+                return helper(low, mid - 1)
+            if xs[mid] == x:
+                return (helper(low, mid - 1) + 1 + helper(mid + 1, high))
+    return helper(0, len(xs) - 1)
+    def helper(low, high):
+        if low > high:
+            return 0
+        elif xs[low] < x:
+            return 0
+        elif xs[high] > x:
+            return 0
+        elif xs[high] == xs[low] == x:
+            return high - low + 1
+        else:
+            mid = (high + low) // 2
+            if xs[mid] > x:
+                return helper(mid + 1, high)
+            if xs[mid] < x:
+                return helper(low, mid - 1)
+            if xs[mid] == x:
+                return (helper(low, mid - 1) + 1 + helper(mid + 1, high))
+    return helper(0, len(xs) - 1)
 
 
 def argmin(f, lo, hi, epsilon=1e-3):
@@ -87,6 +143,14 @@ def argmin(f, lo, hi, epsilon=1e-3):
     >>> argmin(lambda x: (x-5)**2, -20, 0)
     -0.00016935087808430278
     '''
+    if hi - lo < epsilon:
+        return (hi + lo) / 2
+    m1 = (lo + lo + hi) / 3
+    m2 = (lo + hi + hi) / 3
+    if f(m1) < f(m2):
+        return argmin(f, lo, m2, epsilon)
+    else:
+        return argmin(f, m1, hi, epsilon)
 
 
 ################################################################################
@@ -109,7 +173,15 @@ def find_boundaries(f):
     else:
         you're done; return lo,hi
     '''
-
+    def helper(low, high):
+        mid = (low + high) / 2
+        if f(low) < f(mid):
+            return helper(2 * low, high)
+        elif f(high) < f(mid):
+            return helper(low, 2 * high)
+        else:
+            return (low, high)
+    return helper(-1, 1)
 
 def argmin_simple(f, epsilon=1e-3):
     '''
